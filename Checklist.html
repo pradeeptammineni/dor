@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  min-width: 250px;
+  font-family: 'Slabo 27px', serif;
+}
+
+/* Include the padding and border in an element's total width and height */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove margins and padding from the list */
+ol {
+  margin: 0;
+  padding: 0;
+  list-style-type: 1;
+}
+
+/* Style the list items */
+ol li {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  list-style-type: none;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+  
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+ol li:nth-child(odd) {
+  background: #f9f9f9;
+}
+
+/* Darker background-color on hover */
+ol li:hover {
+  background: #ddd;
+}
+
+/* When clicked on, add a background color and strike out text */
+ol li.checked {
+  background: #888;
+  color: #fff;
+  text-decoration: line-through;
+}
+
+/* Add a "checked" mark when clicked on */
+ol li.checked::before {
+  content: '';
+  position: absolute;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
+
+/* Style the header */
+.header {
+  background-color: #f44336;
+  padding: 30px 40px;
+  color: white;
+  text-align: center;
+}
+
+/* Clear floats after the header */
+.header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the input */
+input {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  width: 75%;
+  padding: 10px;
+  float: left;
+  font-size: 16px;
+}
+
+/* Style the "Reset" button */
+.resetBtn {
+  padding: 10px;
+  width: 20%;
+  background: #d9d9d9;
+  color: #555;
+  float: left;
+  text-align: center;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+
+.resetBtn:hover {
+  background-color: #bbb;
+}
+#myProgress {
+  width: 100%;
+  background-color: #ddd;
+  color: black;
+}
+
+#myBar {
+  width: 0%;
+  height: 30px;
+  background-color: #4CAF50;
+  text-align: center;
+  line-height: 30px;
+  
+}
+
+#timeProgress {
+  width: 100%;
+  background-color: #ddd;
+  color: black;
+}
+
+#timeBar {
+  width: 0%;
+  height: 30px;
+  background-color: #4CAF50;
+  text-align: center;
+  line-height: 30px;
+}
+</style>
+</head>
+<body>
+
+<!-- <div id="myDIV" class="header">
+  <h2 style="margin:5px">My To Do List</h2>
+  <input type="text" id="myInput" placeholder="Title...">
+  <span onclick="newElement()" class="addBtn">Add</span>
+</div> -->
+<div id="timeProgress">
+  <div id="timeBar"></div>
+</div>
+<span id="timeMessage"></span>
+<center>
+<button class="resetBtn" onclick="startTimer()">Start Timer</button>
+<button class="resetBtn" onclick="location.reload(true)">Reset Session</button>
+</center>
+
+<center><h2>Supernova - DoR</h2></center>
+<ol id="myUL">
+	<li>Have user story in a structure that meets the INVEST criteria with Epics (Epic Hypothesis) and Timekeeper code associated. <i><font color="gray">E.g., As a <b>User</b>, I want <b>Activity</b> so that <b>Business value</b> [* - Does not apply for Enabler stories]</font></i>
+	</li>
+	<li>Define acceptance criteria clearly <i><font color="gray">i.e., what makes the work on this story acceptable </font></i></li>
+	<li>State the cross functional team dependencies, if any (state explicitly if there are none). <i><font color="gray">E.g., DS, Imola, BI, SI, V1 Admin. If there are none, state the same</font></i></li>
+	<li>State the dependencies on other services teams, if any (state explicitly if there are none). <i><font color="gray">E.g., UX , QE Regression, QE Perf, SAP, DWH, SalesForce, ITSS, AMS, Third Party partners (CARsArrive)</font></i></li>
+	<li>Define scope related to QA (Functional and Regression) and Performance Testing; mark Needs QA and Needs Perf in the story as Yes or No based on the scope</li>
+	<li>Identify scope related to Refactoring</li>
+	<li>Identify scope related to NFR’s using NFR Checklist</li>
+	<li>Is there a need for UX prototypes? If yes, are they present? If they are required and not present, mark Needs UX as YES and engage UX team. If they are not required, mark Needs UX as NO</li>
+</ol>
+<div id="myProgress">
+  <div id="myBar"><b>0%</b></div>
+</div>
+<script>
+
+// Add a "checked" symbol when clicking on a list item
+var timerOn = 0;
+var list = document.querySelector('ol');
+list.addEventListener('click', function(ev) {
+  if (ev.target.tagName === 'LI') {
+    ev.target.classList.toggle('checked');
+  };
+  move();
+}, false);
+
+function move() {
+	var numCriteriaAll = document.getElementById("myUL").getElementsByTagName("li").length;
+	var numCriteriaChecked = document.getElementsByClassName("checked").length;
+	var varPercent = Math.ceil(numCriteriaChecked*100/numCriteriaAll);
+	//alert (varPercent);
+	var elemResult = document.getElementById("myBar"); 
+	var elemOverall = document.getElementById ("myProgress")
+	elemResult.style.width = varPercent + '%'; 
+	elemResult.innerHTML = '<b>' + varPercent  + '%</b>';
+	if (varPercent >= 100) {
+		elemResult.style.backgroundColor = "#0000FF";
+		elemResult.innerHTML = '<b><font color="white">' + varPercent  + '%</font></b>';
+	}
+	else {
+		elemResult.style.backgroundColor = "#4CAF50";
+		elemResult.innerHTML = '<b>' + varPercent  + '%</b>';
+	}
+}
+
+function startTimer() {
+
+//A timer is already in progress. Let the user know of the same
+if (timerOn >0)
+{
+	document.getElementById("timeMessage").innerHTML = "Timer has already started!";
+	return;
+}
+// Set the date we're counting down to
+var countDownDate = new Date().getTime() + 1200000;
+
+//Reset the style of timer bars
+document.getElementById("timeBar").style.backgroundColor = "#4CAF50";
+//document.getElementById("timeProgress").innerText = "";
+document.getElementById("timeProgress").style.backgroundColor = "#ddd";
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+  //Set the flag to denote the timer is ON now.
+	timerOn = 1;
+  // Get today's date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+  
+  var varPercent = Math.ceil(distance*100/1200000);
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  var elemResult = document.getElementById("timeBar"); 
+  var elemOverall = document.getElementById("timeProgress")
+  // Output the result in an element with id="demo"
+  elemResult.style.width = 100-varPercent + '%'; 
+  elemResult.innerHTML = "<b>" +minutes + "</b>m <b>" + seconds + "</b>s" ;
+    
+  // If the count down is over, write some text 
+  if (distance <= 0) {
+    clearInterval(x);
+	timerOn = 0;
+    elemResult.innerHTML = "TimeUp!";
+	elemResult.style.backgroundColor = "#FF0000";
+  }
+}, 1000);
+}
+
+</script>
+
+</body>
+</html>

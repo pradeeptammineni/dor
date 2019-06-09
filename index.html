@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Open a new window, and resize the width and height to 500px:</p>
+
+<button onclick="PopupCenter('Checklist.html','Supernova - DoR','600','750'); ">Create window</button>
+<button onclick="resizeWin()">Resize window</button>
+
+<script>
+var myWindow;
+
+function openWin() {
+  myWindow = window.open("Checklist.html", "", "width=500, height=800");
+}
+
+function resizeWin() {
+  myWindow.resizeTo(250, 250);
+  myWindow.focus();
+}
+
+function PopupCenter(url, title, w, h) {
+    
+	// Fixes dual-screen position                         Most browsers      Firefox
+    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    var systemZoom = width / window.screen.availWidth;
+	var left = (width - w) / 1 / systemZoom + dualScreenLeft
+	var top = (height - h) / 1 / systemZoom + dualScreenTop
+	
+	//this.window.resizeTo(width-400, height);
+    var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
+
+    // Puts focus on the newWindow
+    if (window.focus) newWindow.focus();
+}
+</script>
+
+</body>
+</html>
