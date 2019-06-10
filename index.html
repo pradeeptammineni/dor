@@ -2,22 +2,11 @@
 <html>
 <body>
 
-<p>Open a new window, and resize the width and height to 500px:</p>
+<p>Open the checklist for Supernova team by clicking below button:</p>
 
-<button onclick="PopupCenter('Checklist.html','Supernova - DoR','600','750'); ">Create window</button>
-<button onclick="resizeWin()">Resize window</button>
+<button onclick="PopupCenter('checklist.html','Supernova - DoR','600','750'); ">Open Checklist</button>
 
 <script>
-var myWindow;
-
-function openWin() {
-  myWindow = window.open("Checklist.html", "", "width=500, height=800");
-}
-
-function resizeWin() {
-  myWindow.resizeTo(250, 250);
-  myWindow.focus();
-}
 
 function PopupCenter(url, title, w, h) {
     
